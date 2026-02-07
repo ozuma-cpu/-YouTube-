@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>スピリチュアルYouTube台本生成ツール</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 40px;
+            font-size: 0.9em;
+        }
+
+        .step-section {
+            margin-bottom: 30px;
+            padding: 25px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            border-left: 4px solid #667eea;
+        }
+
+        .step-title {
+            font-size: 1.3em;
+            color: #333;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .step-description {
+            color: #666;
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1em;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            font-weight: 600;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .secondary-btn {
+            background: #6c757d;
+        }
+
+        .secondary-btn:hover {
+            box-shadow: 0 10px 25px rgba(108, 117, 125, 0.4);
+        }
+
+        .success-btn {
+            background: #28a745;
+        }
+
+        .success-btn:hover {
+            box-shadow: 0 10px 25px rgba(40, 167, 69, 0.4);
+        }
+
+        .theme-display {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+
+        .theme-editor {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            align-items: flex-start;
+        }
+
+        .theme-input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            font-size: 1em;
+            resize: vertical;
+            min-height: 60px;
+            width: 100%;
+            font-family: inherit;
+        }
+
+        .theme-consultation {
+            margin-bottom: 15px;
+        }
+
+        .theme-consultation label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-size: 0.95em;
+        }
+
+        .output-box {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 15px;
+            white-space: pre-wrap;
+            line-height: 1.8;
+            max-height: 400px;
+            overflow-y: auto;
+            font-size: 0.95em;
+            border: 1px solid #e0e0e0;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #667eea;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .progress-indicator {
+            background: #e0e0e0;
+            border-radius: 10px;
+            height: 8px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s;
+        }
+
+        .progress-text {
+            text-align: center;
+            color: #666;
+            margin-top: 10px;
+            font-size: 0.9em;
+            font-weight: 600;
+        }
+
+        .chapter-list {
+            margin-top: 15px;
+        }
+
+        .chapter-item {
+            background: #f8f9fa;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            border-left: 4px solid #ccc;
+        }
+
+        .chapter-item.complete {
+            border-left-color: #28a745;
+            background: #e6f7e6;
+        }
+
+        .chapter-item.processing {
+            border-left-color: #ffc107;
+            background: #fff9e6;
+        }
+
+        .final-script-area {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 12px;
+            margin-top: 20px;
+            white-space: pre-wrap;
+            line-height: 1.8;
+            max-height: 600px;
+            overflow-y: auto;
+            border: 1px solid #e0e0e0;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .theme-count {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            margin-left: 10px;
+        }
+
+        .completed-themes {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+
+        .completed-item {
+            padding: 10px;
+            margin-bottom: 8px;
+            background: #e6f7e6;
+            border-radius: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 4px solid #28a745;
+        }
+
+        .download-link {
+            background: #667eea;
+            color: white;
+            padding: 6px 15px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 0.9em;
+            cursor: pointer;
+        }
+
+        .download-link:hover {
+            background: #5568d3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌟 スピリチュアルYouTube台本生成ツール</h1>
+        <p class="subtitle">テーマを1つずつ生成・編集して完成台本を作成</p>
+
+        <!-- ステップ1: テーマ生成 -->
+        <div class="step-section">
+            <div class="step-title">① テーマを生成・相談</div>
+            <div class="step-description">YouTubeで実際に人気のスピリチュアル系動画のパターンを分析し、サンプルテーマを提案します。気に入らなければ修正を相談できます。</div>
+            
+            <div class="button-group">
+                <button id="generateSampleBtn">📊 YouTubeリサーチして最適なテーマを提案</button>
+            </div>
+            
+            <div id="researchLoading" class="loading hidden">
+                <div class="spinner"></div>
+                <p>YouTubeの人気動画パターンを分析中...</p>
+            </div>
+            
+            <div id="researchResult" class="output-box hidden" style="background: #fff9e6; border: 2px solid #ffc107;">
+                <strong>📊 YouTubeリサーチ結果:</strong>
+                <div id="researchContent" style="margin-top: 10px;"></div>
+            </div>
+
+            <div id="themeDisplay" class="theme-display hidden">
+                <strong>💡 提案されたテーマ:</strong>
+                <div class="theme-editor">
+                    <textarea id="themeInput" class="theme-input" placeholder="テーマを編集できます"></textarea>
+                    <div class="button-group" style="flex-direction: column;">
+                        <button id="acceptThemeBtn" class="success-btn">✅ このテーマで台本作成</button>
+                        <button id="reviseThemeBtn" class="secondary-btn">🔄 修正を相談</button>
+                        <button id="regenerateThemeBtn" class="secondary-btn">🔃 別の案を提案してもらう</button>
+                    </div>
+                </div>
+                
+                <div id="revisionConsultation" class="hidden" style="margin-top: 20px; padding: 20px; background: #f0f8ff; border-radius: 8px; border: 2px solid #667eea;">
+                    <label for="revisionInput"><strong>どう修正したいか相談:</strong></label>
+                    <textarea id="revisionInput" class="theme-input" placeholder="修正したいポイントを具体的に書いてください。例：
+
+・もっと具体的にして
+・数字を入れて欲しい（例：7つの、3分で、など）
+・危機感を強めて
+・初心者向けの表現にして
+・診断型のタイトルにして
+・YouTubeで検索されやすいキーワードを入れて"></textarea>
+                    <button id="submitRevisionBtn">修正案を生成</button>
+                    <button id="cancelRevisionBtn" class="secondary-btn">キャンセル</button>
+                </div>
+            </div>
+            
+            <div id="conversationHistory" class="output-box hidden" style="background: #f0f8ff; border: 1px solid #667eea; max-height: 300px;">
+                <strong>💬 相談履歴:</strong>
+                <div id="conversationLog" style="margin-top: 10px;"></div>
+            </div>
+        </div>
+
+        <!-- ステップ2: 構成生成 -->
+        <div class="step-section">
+            <div class="step-title">② 8章構成を作成</div>
+            <div class="step-description">選択したテーマで8章構成を自動作成します</div>
+            
+            <div id="structureLoading" class="loading hidden">
+                <div class="spinner"></div>
+                <p>構成を作成中...</p>
+            </div>
+
+            <div id="structureDisplay" class="output-box hidden"></div>
+        </div>
+
+        <!-- ステップ3: 各章生成 -->
+        <div class="step-section">
+            <div class="step-title">③ 全8章の本文を生成</div>
+            <div class="step-description">第1章から最終章まで順番に生成します（各章1200-1500文字）</div>
+            
+            <div class="progress-indicator">
+                <div id="chapterProgress" class="progress-fill"></div>
+            </div>
+            <div id="chapterProgressText" class="progress-text"></div>
+
+            <div id="chapterLoading" class="loading hidden">
+                <div class="spinner"></div>
+                <p>章を生成中...</p>
+            </div>
+
+            <div id="chapterList" class="chapter-list"></div>
+        </div>
+
+        <!-- ステップ4: 完成台本 -->
+        <div class="step-section">
+            <div class="step-title">④ 完成台本</div>
+            <div class="step-description">生成された完成台本をダウンロードできます</div>
+            
+            <div id="finalScriptContainer" class="hidden">
+                <div class="button-group">
+                    <button id="downloadBtn" class="success-btn">📥 台本をダウンロード</button>
+                    <button id="copyBtn" class="secondary-btn">📋 台本をコピー</button>
+                    <button id="nextThemeBtn">次のテーマを作成</button>
+                </div>
+                <div id="finalScript" class="final-script-area"></div>
+            </div>
+        </div>
+
+        <!-- 完成リスト -->
+        <div class="step-section" id="completedSection" style="display: none;">
+            <div class="step-title">✅ 完成した台本一覧</div>
+            <div id="completedList" class="completed-themes"></div>
+            <button id="downloadAllBtn" class="success-btn">📦 全台本をまとめてダウンロード</button>
+        </div>
+    </div>
+
+    <script>
+        const CTA_FIRST = `早速始める前に、10秒だけお時間をください。
+チャネリングやチャクラ、オーラやヒーリング…
+そういったスピリチュアルな学びに惹かれ、勉強してきたのに――
+✔「やっても体感がない」
+✔「自信を持って人を癒せない」
+✔「結局、次の教材や講座を探してしまう」
+そんなふうに感じていませんか？
+本や動画を見ても、いざ実践すると
+「ヒーリングは本当にできているのか？」
+「チャクラは開いているのか？」
+「オーラを感じられているのか？」
+と不安になり、気づけばまた次の教材を探してしまう…。
+そんな"スピリチュアル習得迷子"の方のために、今LINEで
+🌟【ヒーリングやチャネリングをゼロから体感できる無料体験プログラム】
+🌟【チャクラとオーラを安定的に整える秘伝の実践法】
+を特別にプレゼントしています。
+しかも、このプログラムは スマホさえあれば、どこでも学べる 形になっています。
+ちょっとしたスキマ時間でも取り組めるので、忙しい方でも無理なく実践できます。
+さらに、私自身がこれまで 延べ4万5,000人以上に施術・指導してきた実体験をもとにした内容 なので、他では聞けない"現場で結果が出たエネルギー法則"を学ぶことができます。
+たった10秒の行動では現実は変わりません。
+ですが、その最初の10秒で動いた人はすでに――
+✨「ガイドと確信を持ってつながれるチャネリング力」
+✨「チャクラやオーラを調律し、波動を自在に扱う力」
+✨「人生を好転させるエネルギーのマスター法則」
+を手に入れ始めています。
+迷わず、今すぐその指で概要欄からLINEに無料登録してください。
+あなたの"本来の力"を呼び覚ます第一歩を、今ここから踏み出しましょう。`;
+
+        const CTA_FINAL = `最後までご視聴いただきましてありがとうございました。
+ぜひ、あなたも秘伝の理論を学び確実に人を癒せるヒーラーになりませんか?
+私の公式LINEでは、まったくヒーリングの体感がない方でもヒーリング能力を覚醒させて、上達するための次元上昇セルフヒーリングの奥義を5本の動画でプレゼントしています。
+✅ 累計4万5000人以上を施術指導してわかった
+　"癒しが起こる宇宙の仕組み"を徹底解説した動画コンテンツ
+✅ たった3分の氣の伝授で
+　施術力が一気に引き上がる【宇宙秘伝功のステップ】
+✅ 初心者でも"氣"をリアルに感じられる
+　身体の"あるポイント"と覚醒ワーク
+✅ オンラインでもエネルギー通る
+　9割が知らない"氣"の本当の使い方とは
+✅ 実際に年商10倍を叶えた
+　ヒーラー・整体師のリアル体験談とその方法
+など
+🌀「スピリチュアルなことに興味あるけど、よくわからない…」
+🌈「本当に"自分にも"ヒーリングができるの？」
+と思う方も、動画を見たあとには不思議と"確信"に変わっていきます。
+🌟たとえ霊感がなくても大丈夫
+見て、感じて、マネするだけで、
+あなたの中の"眠れる力"が、自然に目覚め始めるコンテンツです。
+これまで数千万円以上の投資をして学んできた価値が高い内容で、非常に好評なものとなるので、ぜひ概要欄のページからメールアドレスを入力して、公式LINEを登録してみてください。
+また、ヒーリングやスピリチュアルの習得を最速で目指せる体験セッションもご案内しているので、そちらもチェックしていただけると嬉しいです。
+LINEにご登録いただくと、どなたでも受け取ることができます。
+是非この動画の概要欄から LINEのURLをチェックしてみてくださいね。
+今回もここまでご覧いただきありがとうございました。
+
+今後より優れた情報を厳選して、お届けするためにもGOODボタンやコメントをいただけたらうれしいです。
+
+そして、次回の動画も濃い情報をお届けします。
+
+通知を見逃さないようにチャンネルもよろしくお願いします。
+それではまたお会いしましょう!`;
+
+        let currentTheme = '';
+        let currentStructure = '';
+        let currentChapters = [];
+        let currentChapterTitles = [];
+        let currentFinalScript = '';
+        let completedScripts = [];
+        let conversationHistory = [];
+        let researchData = '';
+
+        // YouTubeリサーチしてテーマ提案
+        document.getElementById('generateSampleBtn').addEventListener('click', generateThemeWithResearch);
+        document.getElementById('regenerateThemeBtn').addEventListener('click', generateThemeWithResearch);
+        
+        // 修正相談ボタン
+        document.getElementById('reviseThemeBtn').addEventListener('click', () => {
+            const revisionSection = document.getElementById('revisionConsultation');
+            revisionSection.classList.remove('hidden');
+        });
+        
+        // 修正キャンセル
+        document.getElementById('cancelRevisionBtn').addEventListener('click', () => {
+            document.getElementById('revisionConsultation').classList.add('hidden');
+            document.getElementById('revisionInput').value = '';
+        });
+        
+        // 修正案生成
+        document.getElementById('submitRevisionBtn').addEventListener('click', async () => {
+            const currentThemeText = document.getElementById('themeInput').value.trim();
+            const revisionRequest = document.getElementById('revisionInput').value.trim();
+            
+            if (!currentThemeText || !revisionRequest) {
+                alert('現在のテーマと修正内容を入力してください');
+                return;
+            }
+            
+            const loading = document.getElementById('researchLoading');
+            const submitBtn = document.getElementById('submitRevisionBtn');
+            
+            submitBtn.disabled = true;
+            loading.classList.remove('hidden');
+            document.getElementById('researchLoading').querySelector('p').textContent = '修正案を生成中...';
+            
+            try {
+                const prompt = `以下のYouTubeリサーチデータを参考にしてください：
+${researchData}
+
+現在のテーマ：「${currentThemeText}」
+
+ユーザーからの修正要望：
+${revisionRequest}
+
+上記の修正要望を反映して、YouTubeで実際にヒットするパターンを活用した改善テーマを1つ提案してください。
+
+・具体的
+・診断型 or 数字入り or 危機感あり
+・抽象禁止
+・ユーザーの要望を必ず反映すること
+・YouTubeで人気が出やすい要素を含めること
+
+タイトルのみ出力（番号不要、説明不要）`;
+
+                const revisedTheme = await callClaude(prompt);
+                currentTheme = revisedTheme.trim();
+                
+                document.getElementById('themeInput').value = currentTheme;
+                
+                // 相談履歴に追加
+                addToConversationLog('あなたの修正要望', revisionRequest);
+                addToConversationLog('AIの修正案', currentTheme);
+                
+                document.getElementById('revisionInput').value = '';
+                document.getElementById('revisionConsultation').classList.add('hidden');
+                
+            } catch (error) {
+                alert('エラー: ' + error.message);
+            } finally {
+                submitBtn.disabled = false;
+                loading.classList.add('hidden');
+                document.getElementById('researchLoading').querySelector('p').textContent = 'YouTubeの人気動画パターンを分析中...';
+            }
+        });
+
+        async function generateThemeWithResearch() {
+            const loading = document.getElementById('researchLoading');
+            const researchResult = document.getElementById('researchResult');
+            const researchContent = document.getElementById('researchContent');
+            const display = document.getElementById('themeDisplay');
+            const generateBtn = document.getElementById('generateSampleBtn');
+            const regenerateBtn = document.getElementById('regenerateThemeBtn');
+
+            generateBtn.disabled = true;
+            regenerateBtn.disabled = true;
+            loading.classList.remove('hidden');
+            researchResult.classList.add('hidden');
+            display.classList.add('hidden');
+
+            try {
+                // ステップ1: YouTubeリサーチ（AIにYouTubeの人気パターンを推測させる）
+                const researchPrompt = `あなたはYouTubeスピリチュアルジャンルの専門家です。
+
+「ヒーリング」「波動」「覚醒」「チャクラ」「引き寄せ」などのスピリチュアル系動画で、
+YouTubeで実際に再生数が伸びやすい動画タイトルのパターンを分析してください。
+
+以下の観点で分析結果を200文字程度で簡潔にまとめてください：
+・どんなタイトル形式が人気か（診断型、数字入り、危機感型など）
+・どんなキーワードが効果的か
+・初心者が引き込まれやすい要素は何か
+
+分析結果のみ出力してください。`;
+
+                researchData = await callClaude(researchPrompt);
+                
+                // リサーチ結果を表示
+                researchContent.textContent = researchData;
+                researchResult.classList.remove('hidden');
+                
+                // 相談履歴に追加
+                addToConversationLog('YouTubeリサーチ分析', researchData);
+
+                // ステップ2: リサーチ結果を基にテーマ生成
+                loading.querySelector('p').textContent = '最適なテーマを提案中...';
+                
+                const themePrompt = `以下のYouTubeリサーチ分析結果に基づいて、テーマを1つ提案してください：
+
+${researchData}
+
+初心者向けヒーリング・波動・覚醒ジャンルで、
+上記の分析を踏まえて、クリック率が高く長尺解説に向く動画テーマを作成してください。
+
+・具体的
+・診断型 or 数字入り or 危機感あり
+・抽象禁止
+・YouTubeで実際にヒットしやすい要素を必ず含める
+
+タイトルのみ出力（番号不要、説明不要）`;
+
+                const theme = await callClaude(themePrompt);
+                currentTheme = theme.trim();
+                
+                document.getElementById('themeInput').value = currentTheme;
+                display.classList.remove('hidden');
+                
+                // 相談履歴に追加
+                addToConversationLog('AIの提案テーマ', currentTheme);
+
+            } catch (error) {
+                alert('エラー: ' + error.message);
+            } finally {
+                generateBtn.disabled = false;
+                regenerateBtn.disabled = false;
+                loading.classList.add('hidden');
+                loading.querySelector('p').textContent = 'YouTubeの人気動画パターンを分析中...';
+            }
+        }
+        
+        function addToConversationLog(speaker, message) {
+            const log = document.getElementById('conversationLog');
+            const history = document.getElementById('conversationHistory');
+            
+            const entry = document.createElement('div');
+            entry.style.marginBottom = '15px';
+            entry.style.padding = '12px';
+            entry.style.borderRadius = '8px';
+            entry.style.background = speaker.includes('AI') ? '#e8f4ff' : '#fff';
+            entry.style.borderLeft = speaker.includes('AI') ? '3px solid #667eea' : '3px solid #28a745';
+            
+            const cleanMessage = message.replace(/^["']|["']$/g, '').trim();
+            
+            entry.innerHTML = `<strong style="color: #333;">${speaker}:</strong><br><span style="color: #555;">${cleanMessage}</span>`;
+            
+            log.appendChild(entry);
+            history.classList.remove('hidden');
+            
+            // スクロール
+            setTimeout(() => {
+                history.scrollTop = history.scrollHeight;
+            }, 100);
+        }
+
+        // テーマ確定して台本作成開始
+        document.getElementById('acceptThemeBtn').addEventListener('click', async () => {
+            currentTheme = document.getElementById('themeInput').value.trim();
+            
+            if (!currentTheme) {
+                alert('テーマを入力してください');
+                return;
+            }
+
+            // UIをリセット
+            document.getElementById('themeDisplay').classList.add('hidden');
+            document.getElementById('generateSampleBtn').disabled = true;
+            document.getElementById('structureDisplay').classList.add('hidden');
+            document.getElementById('chapterList').innerHTML = '';
+            document.getElementById('finalScriptContainer').classList.add('hidden');
+            
+            currentChapters = [];
+            currentChapterTitles = [];
+
+            try {
+                // 構成生成
+                await generateStructure();
+                
+                // 全章生成
+                await generateAllChapters();
+                
+                // 最終台本作成
+                createFinalScript();
+
+            } catch (error) {
+                alert('エラーが発生しました: ' + error.message);
+                document.getElementById('generateSampleBtn').disabled = false;
+            }
+        });
+
+        async function generateStructure() {
+            const loading = document.getElementById('structureLoading');
+            const display = document.getElementById('structureDisplay');
+
+            loading.classList.remove('hidden');
+
+            try {
+                const prompt = `以下テーマでYouTube動画の構成のみ作ってください。
+
+テーマ：
+「${currentTheme}」
+
+・8章構成
+・各章の内容を100文字で要約
+・本文はまだ書かない`;
+
+                console.log('構成生成開始:', currentTheme);
+                currentStructure = await callClaude(prompt);
+                console.log('構成生成完了:', currentStructure);
+                
+                currentChapterTitles = extractChapterTitles(currentStructure);
+                console.log('章タイトル抽出:', currentChapterTitles);
+
+                display.textContent = currentStructure;
+                display.classList.remove('hidden');
+                loading.classList.add('hidden');
+            } catch (error) {
+                loading.classList.add('hidden');
+                console.error('構成生成エラー:', error);
+                throw new Error('構成生成に失敗しました: ' + error.message);
+            }
+        }
+
+        async function generateAllChapters() {
+            const loading = document.getElementById('chapterLoading');
+            const list = document.getElementById('chapterList');
+            const progressFill = document.getElementById('chapterProgress');
+            const progressText = document.getElementById('chapterProgressText');
+
+            loading.classList.remove('hidden');
+
+            // 第1章
+            updateChapterProgress(1, 8);
+            addChapterItem(1, 'processing');
+
+            const chapter1Prompt = `第1章のみ書いてください。
+
+テーマ: ${currentTheme}
+
+構成:
+${currentStructure}
+
+・1200〜1500文字
+・初心者向け
+・最初の1文で強いフックを自動生成
+・問題提起のワンセンテンスの後に以下の自己紹介文を入れる
+「こんにちは。遠隔波動ヒーリング創始者のべっしーです。」
+・章の最後に以下のCTAをそのまま挿入
+
+${CTA_FIRST}
+
+【重要：創作禁止ルール】
+・架空の人物、クライアント、受講生、体験談、ストーリーを作らない
+・「Aさん」「ある女性」「私のクライアント」などの創作事例は禁止
+・存在しない実績や数字を捏造しない
+・具体例を書く場合は「一般論」または「多くの人は〜」という表現のみ使用
+・事実・解説・普遍的説明だけで構成すること
+・次の章の予告みたいな文章は書かないこと`;
+
+            const chapter1 = await callClaude(chapter1Prompt);
+            currentChapters.push(chapter1);
+            updateChapterItem(1, 'complete');
+
+            // 第2-7章
+            for (let i = 2; i <= 7; i++) {
+                updateChapterProgress(i, 8);
+                addChapterItem(i, 'processing');
+
+                const chapterPrompt = `第${i}章のみ書いてください。
+
+テーマ: ${currentTheme}
+
+構成:
+${currentStructure}
+
+これまでの内容:
+${currentChapters.join('\n\n')}
+
+・1200〜1500文字
+・ストーリー＋解説
+・CTAは入れない
+・自然に前章の続きとして書く
+
+【重要：創作禁止ルール】
+・章の書き出しを定型化しないでください。特に「第1章でお伝えした通り」といった既知の事実の再確認は不要です。
+・架空の人物、クライアント、受講生、体験談、ストーリーを作らない
+・「Aさん」「ある女性」「私のクライアント」などの創作事例は禁止
+・存在しない実績や数字を捏造しない
+・具体例を書く場合は「一般論」または「多くの人は〜」という表現のみ使用
+・事実・解説・普遍的説明だけで構成すること
+・次の章の予告みたいな文章は書かないこと`;
+
+                const chapter = await callClaude(chapterPrompt);
+                currentChapters.push(chapter);
+                updateChapterItem(i, 'complete');
+            }
+
+            // 第8章（最終章）
+            updateChapterProgress(8, 8);
+            addChapterItem(8, 'processing');
+
+            const finalChapterPrompt = `最終章を書いてください。
+
+テーマ: ${currentTheme}
+
+構成:
+${currentStructure}
+
+これまでの内容:
+${currentChapters.join('\n\n')}
+
+・まとめ＋希望
+・最後に以下のCTAをそのまま挿入
+
+${CTA_FINAL}
+
+【重要：創作禁止ルール】
+・架空の人物、クライアント、受講生、体験談、ストーリーを作らない
+・「Aさん」「ある女性」「私のクライアント」などの創作事例は禁止
+・存在しない実績や数字を捏造しない
+・具体例を書く場合は「一般論」または「多くの人は〜」という表現のみ使用
+・事実・解説・普遍的説明だけで構成すること
+・次の章の予告みたいな文章は書かないこと`;
+
+            const finalChapter = await callClaude(finalChapterPrompt);
+            currentChapters.push(finalChapter);
+            updateChapterItem(8, 'complete');
+
+            loading.classList.add('hidden');
+        }
+
+        function updateChapterProgress(current, total) {
+            const percentage = (current / total) * 100;
+            document.getElementById('chapterProgress').style.width = percentage + '%';
+            document.getElementById('chapterProgressText').textContent = `第${current}章を生成中... (${current}/${total})`;
+        }
+
+        function addChapterItem(chapterNum, status) {
+            const list = document.getElementById('chapterList');
+            const item = document.createElement('div');
+            item.id = 'chapter-item-' + chapterNum;
+            item.className = 'chapter-item ' + status;
+            item.innerHTML = `<strong>第${chapterNum}章</strong> - ${status === 'processing' ? '生成中...' : '完了'}`;
+            list.appendChild(item);
+        }
+
+        function updateChapterItem(chapterNum, status) {
+            const item = document.getElementById('chapter-item-' + chapterNum);
+            if (item) {
+                item.className = 'chapter-item ' + status;
+                item.innerHTML = `<strong>第${chapterNum}章</strong> - ${status === 'complete' ? '✅ 完了' : '生成中...'}`;
+            }
+        }
+
+        function createFinalScript() {
+            let script = `${currentTheme}\n\n`;
+            
+            for (let i = 0; i < currentChapters.length; i++) {
+                const chapterTitle = currentChapterTitles[i] || `第${i + 1}章`;
+                script += `${chapterTitle}\n\n${currentChapters[i]}\n\n\n`;
+            }
+
+            currentFinalScript = script;
+
+            document.getElementById('finalScript').textContent = script;
+            document.getElementById('finalScriptContainer').classList.remove('hidden');
+            document.getElementById('chapterProgressText').textContent = '全8章の生成が完了しました！';
+        }
+
+        function extractChapterTitles(structureText) {
+            const titles = [];
+            const lines = structureText.split('\n');
+            lines.forEach(line => {
+                const match = line.match(/第[1-8]章[：:](.*?)$/);
+                if (match) {
+                    titles.push(match[0].trim());
+                }
+            });
+            return titles;
+        }
+
+        // ダウンロード
+        document.getElementById('downloadBtn').addEventListener('click', () => {
+            downloadFile(currentTheme, currentFinalScript);
+            saveCompletedScript();
+        });
+
+        // コピー
+        document.getElementById('copyBtn').addEventListener('click', () => {
+            navigator.clipboard.writeText(currentFinalScript).then(() => {
+                const btn = document.getElementById('copyBtn');
+                const originalText = btn.textContent;
+                btn.textContent = '✅ コピーしました！';
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                }, 2000);
+            });
+        });
+
+        // 次のテーマ作成
+        document.getElementById('nextThemeBtn').addEventListener('click', () => {
+            saveCompletedScript();
+            resetForNewTheme();
+        });
+
+        function saveCompletedScript() {
+            const exists = completedScripts.find(s => s.theme === currentTheme);
+            if (!exists && currentFinalScript) {
+                completedScripts.push({
+                    theme: currentTheme,
+                    content: currentFinalScript,
+                    filename: `台本_${completedScripts.length + 1}_${sanitizeFilename(currentTheme)}.txt`
+                });
+                updateCompletedList();
+            }
+        }
+
+        function updateCompletedList() {
+            if (completedScripts.length > 0) {
+                document.getElementById('completedSection').style.display = 'block';
+                
+                const list = document.getElementById('completedList');
+                list.innerHTML = '';
+                
+                completedScripts.forEach((script, index) => {
+                    const item = document.createElement('div');
+                    item.className = 'completed-item';
+                    item.innerHTML = `
+                        <span>${index + 1}. ${script.theme}</span>
+                        <a class="download-link" onclick="downloadFileByIndex(${index})">ダウンロード</a>
+                    `;
+                    list.appendChild(item);
+                });
+            }
+        }
+
+        function resetForNewTheme() {
+            document.getElementById('generateSampleBtn').disabled = false;
+            document.getElementById('themeInput').value = '';
+            document.getElementById('structureDisplay').classList.add('hidden');
+            document.getElementById('chapterList').innerHTML = '';
+            document.getElementById('finalScriptContainer').classList.add('hidden');
+            document.getElementById('chapterProgress').style.width = '0%';
+            document.getElementById('chapterProgressText').textContent = '';
+            document.getElementById('conversationLog').innerHTML = '';
+            document.getElementById('conversationHistory').classList.add('hidden');
+            document.getElementById('revisionConsultation').classList.add('hidden');
+            document.getElementById('researchResult').classList.add('hidden');
+            document.getElementById('revisionInput').value = '';
+            
+            currentTheme = '';
+            currentStructure = '';
+            currentChapters = [];
+            currentChapterTitles = [];
+            currentFinalScript = '';
+            conversationHistory = [];
+            researchData = '';
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // 全ダウンロード
+        document.getElementById('downloadAllBtn').addEventListener('click', () => {
+            completedScripts.forEach((script, index) => {
+                setTimeout(() => {
+                    const blob = new Blob([script.content], { type: 'text/plain;charset=utf-8' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = script.filename;
+                    a.click();
+                    URL.revokeObjectURL(url);
+                }, index * 500);
+            });
+        });
+
+        function downloadFile(theme, content) {
+            const filename = `台本_${sanitizeFilename(theme)}.txt`;
+            const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        window.downloadFileByIndex = function(index) {
+            const script = completedScripts[index];
+            const blob = new Blob([script.content], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = script.filename;
+            a.click();
+            URL.revokeObjectURL(url);
+        };
+
+        function sanitizeFilename(filename) {
+            return filename
+                .replace(/[<>:"\/\\|?*]/g, '')
+                .replace(/\s+/g, '_')
+                .substring(0, 50);
+        }
+
+        async function callClaude(prompt) {
+            const response = await fetch('https://api.anthropic.com/v1/messages', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    model: 'claude-sonnet-4-20250514',
+                    max_tokens: 4000,
+                    messages: [{
+                        role: 'user',
+                        content: prompt
+                    }]
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error('API呼び出しに失敗しました');
+            }
+
+            const data = await response.json();
+            return data.content[0].text;
+        }
+    </script>
+</body>
+</html>
